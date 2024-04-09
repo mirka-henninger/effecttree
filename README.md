@@ -14,7 +14,7 @@ It uses functions from the [psychotree](https://github.com/cran/psychotree/) and
 data("SPISA", package = "psychotree")
 RT <- raschtree(spisa ~ gender + age + semester, data = SPISA)
 RT_eff <- add_effectsize(RT, purification = "iterative", type = 'raschtree')
-RT_eff$info$effectsize
+RT_eff$info$effectsizeplot(RT_eff, color_by_node = 1)plot(RT_eff, color_by_node = 3)
 ```
 
 ## References

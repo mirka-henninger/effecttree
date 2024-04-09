@@ -14,11 +14,11 @@ color_by_node <- function(node_ID, class_color, class_size, panel_color) {
   return_color_fun <- function(object, ...){
     return_fun <-
       node_profileplot(object,
-                                   col = create_color_list(object, node_ID = node_ID, pars = class_color, default = "black"),
-                                   cex = create_color_list(object, node_ID = node_ID, pars = class_size, default = .4),
-                                   border = "black",
-                                   bg = create_bg_list(object, node_ID = node_ID, background_cols = panel_color),
-                                   cf_fun = anchor_pars(node_ID))
+                       col = create_color_list(object, node_ID = node_ID, pars = class_color, default = "black"),
+                       cex = create_color_list(object, node_ID = node_ID, pars = class_size, default = .4),
+                       border = "black",
+                       bg = create_bg_list(object, node_ID = node_ID, background_cols = panel_color),
+                       cf_fun = anchor_pars(node_ID))
     return(return_fun)
   }
   message(paste("Colored by Node", node_ID))
