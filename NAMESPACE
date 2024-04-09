@@ -3,7 +3,6 @@
 S3method(plot,effecttree)
 export(add_effectsize)
 export(get_effectsize)
-export(stopfun_mantelhaenszel)
 import(Formula)
 import(grid)
 import(mvtnorm)

@@ -4,10 +4,12 @@
 \alias{add_effectsize}
 \title{Creates a effecttree object based on the original tree with additional effect size information}
 \usage{
-add_effectsize(object, purification)
+add_effectsize(object, type, purification)
 }
 \arguments{
 \item{object}{An object of type modelparty}
+
+\item{type}{A character indicating the type of the tree ("raschtree", "pctree")}
 
 \item{purification}{A character indicating the type of purification ("none", "iterative")
 ############# FIXME ############ add correction for multiple testing}
@@ -21,9 +23,8 @@ Creates a effecttree object based on the original tree with additional effect si
 \examples{
 \dontrun{
 data("DIFSim", package = "psychotree")
-RT <- raschtree(resp ~ age + gender + motivation, data = DIFSim,
-                stopfun = stopfun_mantelhaenszel(purification = "iterative"))
-RT_MH <- add_mantelhaenszel(RT, purification = "iterative")
+RT <- raschtree(resp ~ age + gender + motivation, data = DIFSim)
+RT_MH <- add_effectsize(RT, type = "raschtree", purification = "iterative")
 RT_MH$info$effectsize
 plot(RT_MH, color_by_node = 1)
 }

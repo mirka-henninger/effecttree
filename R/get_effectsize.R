@@ -1,6 +1,7 @@
 #' Function that returns the effect size measure of a tree object
 #'
 #' @param object An object of type modelparty
+#' @param type A character indicating the type of the tree object ("raschtree", "pctree")
 #' @param purification A character indicating the type of purification ("none", "iterative")
 #' @param by A character either "node" or "type" defining the structure of the function output
 #'

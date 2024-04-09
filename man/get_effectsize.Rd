@@ -4,10 +4,12 @@
 \alias{get_effectsize}
 \title{Function that returns the effect size measure of a tree object}
 \usage{
-get_effectsize(object, purification, by = "node")
+get_effectsize(object, type, purification, by = "node")
 }
 \arguments{
 \item{object}{An object of type modelparty}
+
+\item{type}{A character indicating the type of the tree object ("raschtree", "pctree")}
 
 \item{purification}{A character indicating the type of purification ("none", "iterative")}
 
