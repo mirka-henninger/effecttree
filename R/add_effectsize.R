@@ -25,6 +25,8 @@ add_effectsize <- function(object, type, purification){
   class(object) <- c("effecttree", class(object))
   return(object)
 }
+############ FIXME ############
+############ add stopping / pruning function
 #' Plots the effect size tree
 #'
 #' @description Additional options to show the effect size classification in the inner nodes,
