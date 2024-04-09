@@ -1,6 +1,7 @@
 #' Creates a effecttree object based on the original tree with additional effect size information
 #'
 #' @param object An object of type modelparty
+#' @param type A character indicating the type of the tree ("raschtree", "pctree")
 #' @param purification A character indicating the type of purification ("none", "iterative")
 #' ############# FIXME ############ add correction for multiple testing
 #'
@@ -9,18 +10,18 @@
 #' @examples
 #' \dontrun{
 #' data("DIFSim", package = "psychotree")
-#' RT <- raschtree(resp ~ age + gender + motivation, data = DIFSim,
-#'                 stopfun = stopfun_mantelhaenszel(purification = "iterative"))
-#' RT_MH <- add_mantelhaenszel(RT, purification = "iterative")
+#' RT <- raschtree(resp ~ age + gender + motivation, data = DIFSim)
+#' RT_MH <- add_effectsize(RT, type = "raschtree", purification = "iterative")
 #' RT_MH$info$effectsize
 #' plot(RT_MH, color_by_node = 1)
 #' }
 #' @export
-add_effectsize <- function(object, purification){
+add_effectsize <- function(object, type, purification){
   # check whether object is of type modelparty, and party
-  if(!(all(class(object) %in% c("modelparty", "party"))))
+  if(!(any(class(object) %in% c("modelparty", "party"))) &
+     type %in% class(object))
     stop("Object must be a modelparty object (as returned from the raschtree or pctree function")
-  object$info$effectsize <- get_effectsize(object, purification = purification, by = "type")
+  object$info$effectsize <- get_effectsize(object, type = type, purification = purification, by = "type")
   class(object) <- c("effecttree", class(object))
   return(object)
 }

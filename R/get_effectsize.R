@@ -15,9 +15,12 @@
 #' }
 #'
 #' @export
-get_effectsize <- function(object, purification, by = "node"){
+get_effectsize <- function(object,type, purification, by = "node"){
+  ####### FIXME add match.arg for type (raschtree / pctree)
+
   # check whether object is of type modelparty, and party
-  if(!(all(class(object) %in% c("modelparty", "party"))))
+  if(!(any(class(object) %in% c("modelparty", "party"))) &
+     type %in% class(object))
     stop("Object must be an model object (as returned from the raschtree or pctree function")
 
   # extract information from tree
@@ -31,10 +34,9 @@ get_effectsize <- function(object, purification, by = "node"){
   sums <- rowSums(dat)
   node_names <- paste("node", ids, sep = "")
 
-  ######### FIXME ######### if-statement to distinguish between delta-MH and partial gamma
-  ######### FIXME ######### add partial gamma here
-  MH <- lapply(split_groups, function(grp)(calculate_mantelhaenszel(dat = dat, split_group = grp, sums = sums, purification = purification)))
-  if(by == "type"){
+  ######### FIXME ######### if-statement to distinguish between delta-MH and partial gamma (something more elegant?)
+  if(type == "raschtree"){
+    MH <- lapply(split_groups, function(grp)(calculate_mantelhaenszel(dat = dat, split_group = grp, sums = sums, purification = purification)))
     summary_mantelhaenszel <- function(x){
       list(classification = sapply(x, function(x) x$classification),
            mantelhaenszel = sapply(x, function(x) x$mantelhaenszel[1,]),
@@ -43,6 +45,9 @@ get_effectsize <- function(object, purification, by = "node"){
       )
     }
     effectsize <- summary_mantelhaenszel(MH)
+  }
+  if(type == "pctree"){
+    ############ FIXME add partial gamma here
   }
   return(effectsize)
 }
