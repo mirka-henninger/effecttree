@@ -30,14 +30,14 @@ show_effectsize <- function(object, id = TRUE, pval = TRUE, abbreviate = FALSE,
   nam <- names(object)
 
   extract_label <- function(node) {
-    if(partykit::is.terminal(node))
+    if(is.terminal(node))
       return(rep.int("", 2L))
-    varlab <- partykit::character_split(partykit::split_node(node), meta)$name
+    varlab <- partykit::character_split(split_node(node), meta)$name
     if(abbreviate > 0L)
       varlab <- abbreviate(varlab, as.integer(abbreviate))
     if(pval) {
       nullna <- function(x) is.null(x) || is.na(x)
-      pval <- suppressWarnings(try(!nullna(partykit::info_node(node)$p.value),
+      pval <- suppressWarnings(try(!nullna(info_node(node)$p.value),
                                    silent = TRUE))
       pval <- if(inherits(pval, "try-error")) FALSE
       else pval
@@ -49,14 +49,14 @@ show_effectsize <- function(object, id = TRUE, pval = TRUE, abbreviate = FALSE,
     } else {
       plab <- ""
     }
-    tab_classi <- tab_classi[[paste("node", nam[partykit::id_node(node)], sep = "")]]
+    tab_classi <- tab_classi[[paste("node", nam[id_node(node)], sep = "")]]
     return(c(varlab, plab, tab_classi))
   }
 
   maxstr <- function(node) {
     lab <- extract_label(node)
-    klab <- if(partykit::is.terminal(node)) ""
-    else unlist(lapply(partykit::kids_node(node), maxstr))
+    klab <- if(is.terminal(node)) ""
+    else unlist(lapply(kids_node(node), maxstr))
     lab <- c(lab, klab)
     lab <- unlist(lapply(lab, function(x) strsplit(x, "\n")))
     lab <- lab[which.max(nchar(lab))]
@@ -64,17 +64,17 @@ show_effectsize <- function(object, id = TRUE, pval = TRUE, abbreviate = FALSE,
     return(lab)
   }
 
-  nstr <- maxstr(partykit::node_party(object))
+  nstr <- maxstr(node_party(object))
   if(nchar(nstr) < 6) nstr <- "aAAAAa"
 
   ### panel function for the inner nodes
   rval <- function(node) {
     pushViewport(viewport(gp = gp, name = paste("node_inner",
-                                                partykit::id_node(node), "_gpar", sep = "")))
+                                                id_node(node), "_gpar", sep = "")))
     node_vp <- viewport(x = unit(0.5, "npc"), y = unit(0.5,
                                                        "npc"), width = unit(1, "strwidth", nstr) * 1.3,
                         height = unit(5, "lines"), name = paste("node_inner",
-                                                                partykit::id_node(node), sep = ""), gp = gp)
+                                                                id_node(node), sep = ""), gp = gp)
     pushViewport(node_vp)
 
     xell <- c(seq(0, 0.2, by = 0.01),
@@ -96,11 +96,11 @@ show_effectsize <- function(object, id = TRUE, pval = TRUE, abbreviate = FALSE,
 
     if(id) {
       nodeIDvp <- viewport(x = unit(0.5, "npc"), y = unit(1, "npc"),
-                           width = max(unit(1, "lines"), unit(1.3, "strwidth", nam[partykit::id_node(node)])),
-                           height = max(unit(1, "lines"), unit(1.3, "strheight", nam[partykit::id_node(node)])))
+                           width = max(unit(1, "lines"), unit(1.3, "strwidth", nam[id_node(node)])),
+                           height = max(unit(1, "lines"), unit(1.3, "strheight", nam[id_node(node)])))
       pushViewport(nodeIDvp)
       grid.rect(gp = gpar(fill = fill[2]))
-      grid.text(nam[partykit::id_node(node)])
+      grid.text(nam[id_node(node)])
       popViewport()
     }
     upViewport(2)

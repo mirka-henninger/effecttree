@@ -48,10 +48,10 @@ plot.effecttree <- function(x,
                             node_background = c("#eee3af", "#aeaeae"), ...){
 
   # define inner and terminal panels
-  inner_panel <- partykit::node_inner
+  inner_panel <- node_inner
   if(show_classification == TRUE) inner_panel <- show_effectsize
 
-  terminal_panel <- psychotree::node_profileplot
+  terminal_panel <- node_profileplot
   if(!is.null(color_by_node)) terminal_panel <- color_by_node(node_ID = color_by_node,
                                                               class_color = ABC_colors,
                                                               class_size = ABC_size,

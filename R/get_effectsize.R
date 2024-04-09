@@ -21,9 +21,9 @@ get_effectsize <- function(object, purification, by = "node"){
     stop("Object must be an model object (as returned from the raschtree or pctree function")
 
   # extract information from tree
-  ids <- which(!(partykit::nodeids(object, terminal = FALSE) %in% partykit::nodeids(object, terminal = TRUE)))
-  dat_fitted <- partykit::data_party(object) # dataframe with data, split variables and fitted groups (end nodes)
-  splits <- partykit::node_party(object) # where the splits are
+  ids <- which(!(nodeids(object, terminal = FALSE) %in% nodeids(object, terminal = TRUE)))
+  dat_fitted <- data_party(object) # dataframe with data, split variables and fitted groups (end nodes)
+  splits <- node_party(object) # where the splits are
 
   # prepare data for effect size calculation
   split_groups <- return_split_groups(node = splits, dat_fitted)

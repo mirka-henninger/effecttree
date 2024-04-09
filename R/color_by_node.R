@@ -39,7 +39,7 @@ create_color_list <- function(object, node_ID, pars, default){
     stop("No effect size classification found. Please use the add_effectsize function to add an effect size measures to the tree object")
 
   # get IDs of inner nodes
-  nodes <- partykit::node_party(object) # where the splits are
+  nodes <- node_party(object) # where the splits are
   inner_nodes <- get_inner_nodes(nodes)
   inner_nodes_IDs <- sapply(inner_nodes, function(x) x$id)
 
@@ -81,7 +81,7 @@ create_bg_list <- function(object, node_ID, background_cols){
     stop("No Mantel-Haenszel classification found. Please use the add_mantelhaenszel function to add Mantel-Haenszel effect size measures to the Raschtree object")
 
   # get IDs of inner nodes
-  nodes <- partykit::node_party(object) # where the splits are
+  nodes <- node_party(object) # where the splits are
   inner_nodes <- get_inner_nodes(nodes)
   inner_nodes_IDs <- sapply(inner_nodes, function(x) x$id)
 
@@ -90,8 +90,8 @@ create_bg_list <- function(object, node_ID, background_cols){
 
   # get terminal nodes of node_ID and the remaining node IDs
   which_ID <- which(inner_nodes_IDs == node_ID)
-  children_left <- partykit::kids_node(inner_nodes[[which_ID]])[[1]]
-  children_right <- partykit::kids_node(inner_nodes[[which_ID]])[[2]]
+  children_left <- kids_node(inner_nodes[[which_ID]])[[1]]
+  children_right <- kids_node(inner_nodes[[which_ID]])[[2]]
   terminal_left <- get_terminal_nodes(children_left)
   terminal_right <- get_terminal_nodes(children_right)
 
@@ -113,7 +113,7 @@ create_bg_list <- function(object, node_ID, background_cols){
 anchor_pars <- function(node_ID){
   return(function(object, nodes){
     # get IDs of inner nodes
-    inner_nodes <- get_inner_nodes(partykit::node_party(object))
+    inner_nodes <- get_inner_nodes(node_party(object))
     inner_nodes_IDs <- sapply(inner_nodes, function(x) x$id)
 
     # get terminal nodes of node_ID and the remaining node IDs
@@ -138,11 +138,11 @@ anchor_pars <- function(node_ID){
 apply_to_models <- function (object, node = NULL, FUN = NULL, drop = FALSE, ...)
 {
   if (is.null(node))
-    node <- partykit::nodeids(object, terminal = FALSE)
+    node <- nodeids(object, terminal = FALSE)
   if (is.null(FUN))
     FUN <- function(object, ...) object
   rval <- if ("object" %in% object$info$control$terminal) {
-    partykit::nodeapply(object, node, function(n) FUN(partykit::info_node(n)$object))
+    nodeapply(object, node, function(n) FUN(info_node(n)$object))
   }
   else {
     lapply(partykit::refit.modelparty(object, node, drop = FALSE),

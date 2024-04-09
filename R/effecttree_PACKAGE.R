@@ -28,5 +28,17 @@
 #' @importFrom grDevices gray.colors
 #' @importFrom graphics boxplot
 #' @importFrom graphics hist
+#' @importFrom psychotree node_profileplot
+#' @importFrom partykit node_inner
+#' @importFrom partykit node_party
+#' @importFrom partykit kids_node
+#' @importFrom partykit nodeids
+#' @importFrom partykit nodeapply
+#' @importFrom partykit info_node
+#' @importFrom partykit data_party
+#' @importFrom partykit is.terminal
+#' @importFrom partykit id_node
+#' @importFrom partykit split_node
+#'
 #'
 NULL

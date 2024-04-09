@@ -4,3 +4,4 @@
 .DS_Store
 # cprotect
 *.cpt
+.Rproj.user

@@ -16,7 +16,7 @@ return_split_groups <- function(node, dat_fitted){
     if(is_terminal_node(node) == TRUE){
       errorCondition("not possible")
     }
-    children <- partykit::kids_node(node)
+    children <- kids_node(node)
     left <- children[[1]]
     right <- children[[2]]
     terminal_left <- get_terminal_nodes(left)
@@ -46,7 +46,7 @@ get_terminal_nodes <- function(node){
     res <- list(id = id)
   }
   if(is_terminal_node(node) == FALSE){
-    children <- partykit::kids_node(node)
+    children <- kids_node(node)
     res <- list()
     for (i in 1:(length(children))){
       res[[i]] <- get_terminal_nodes(children[[i]])
@@ -64,7 +64,7 @@ get_inner_nodes <- function(node){
     res <- list()
   }
   if(is_terminal_node(node) == FALSE){
-    children <- partykit::kids_node(node)
+    children <- kids_node(node)
     res <- list()
     for (i in 1:(length(children))){
       res[[i]] <- get_inner_nodes(children[[i]])
