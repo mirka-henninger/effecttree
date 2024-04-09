@@ -1,23 +1,20 @@
-# effecttrees
+# effecttree
 
 This compendium contains helper functions to use the Mantel-Haenszel odds ratio effect size measure in Rasch trees and the partial gamma coefficient in partial credit trees to evaluate the magnitude of DIF and/or DSF.
 
 It can be installed like an R package using devtools: 
 ``` r
-devtools::install_github("mirka-henninger/effecttrees")
-library(effecttrees)
+devtools::install_github("mirka-henninger/effecttree")
+library(effecttree)
 ```
 
 It uses functions from the [psychotree](https://github.com/cran/psychotree/) and [partykit](https://github.com/cran/partykit) packages to fit the raschtree in the recursive partioning environment. The functions from the packages (in particular mob, mob_control, and graphics functions) are modified, to include the new stopping rule and to be able to color items in each end node by the Mantel-Haenszel odds ratio effect size measure of inner nodes for the Rasch tree or by the partial gamma coefficient for the partial credit tree. Additional helper functions are provided to compute the effect size measures from the tree object. As these functions are modified, it is important unload partykit and psychotree before the usage. This repository is currently under development and undergoes ongoing changes and improvement. Please report any bugs that you encounter. 
 
 ``` r
 data("SPISA", package = "psychotree")
-RT <- raschtree(spisa ~ gender + age + semester, data = SPISA, 
-                stopfun = stopfun_mantelhaenszel(purification = "iterative"))
-RT_MH <- add_mantelhaenszel(RT, purification = "iterative")
-RT_MH$info$mantelhaenszel
-plot(RT_MH, color_by_node = 1)
-plot(RT_MH, color_by_node = 3)
+RT <- raschtree(spisa ~ gender + age + semester, data = SPISA)
+RT_eff <- add_effectsize(RT, purification = "iterative", type = 'raschtree')
+RT_eff$info$effectsize
 ```
 
 ## References
