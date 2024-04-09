@@ -13,7 +13,7 @@
 color_by_node <- function(node_ID, class_color, class_size, panel_color) {
   return_color_fun <- function(object, ...){
     return_fun <-
-      psychotree::node_profileplot(object,
+      node_profileplot(object,
                                    col = create_color_list(object, node_ID = node_ID, pars = class_color, default = "black"),
                                    cex = create_color_list(object, node_ID = node_ID, pars = class_size, default = .4),
                                    border = "black",
@@ -74,11 +74,11 @@ create_color_list <- function(object, node_ID, pars, default){
 #' @param node_ID An integer indicating the inner node after which the item parameter should be colored
 #' @param background_cols A character vector indicating the colors of the background panels for left and right terminal nodes of the inner node by which items are colored
 #'
-#' @return A list named after the terminal nodes containing the colors of the item parameter based on ETS Mantel-Haenszel classification
+#' @return A list named after the terminal nodes containing the colors of the item parameter based on effect size classification
 create_bg_list <- function(object, node_ID, background_cols){
   # check whether an effect size is saved in the Raschtree object
   if(is.null(object$info$effectsize))
-    stop("No Mantel-Haenszel classification found. Please use the add_mantelhaenszel function to add Mantel-Haenszel effect size measures to the Raschtree object")
+    stop("No effect size classification found. Please use the add_effectsize function to add an effect size measures to the tree object")
 
   # get IDs of inner nodes
   nodes <- node_party(object) # where the splits are
@@ -107,7 +107,7 @@ create_bg_list <- function(object, node_ID, background_cols){
 }
 #' Helper function for anchoring items in the Rasch tree profile plot
 #'
-#' @param node_ID An integer indicating the inner node after which the item paramter should be colored
+#' @param node_ID An integer indicating the inner node after which the item parameter should be colored
 #'
 #' @return function cf that will be used to extract anchored item parameter from the mob object
 anchor_pars <- function(node_ID){

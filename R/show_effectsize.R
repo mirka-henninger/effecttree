@@ -23,7 +23,7 @@ show_effectsize <- function(object, id = TRUE, pval = TRUE, abbreviate = FALSE,
   table_classi <- sapply(classi, table)
   tab_classi <- apply(table_classi, 2, function(x) paste(rownames(table_classi), ":", x, "; ", sep = ""))
   tab_classi <- apply(tab_classi, 2, function(x) paste(c(rep("_", 14), "\neffect size: ", x), collapse = ""))
-  message(paste("Purification of effect size measure:", object$info$mantelhaenszel$purification[1], sep = " "))
+  message(paste("Purification of effect size measure:", object$info$effectsize$purification[1], sep = " "))
 
   # original node_inner function
   meta <- object$data
