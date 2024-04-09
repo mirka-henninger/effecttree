@@ -1,0 +1,6 @@
+.Rhistory
+.pdf
+*.soc
+.DS_Store
+# cprotect
+*.cpt
