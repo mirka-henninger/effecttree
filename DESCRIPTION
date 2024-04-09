@@ -1,0 +1,35 @@
+Package: effecttree
+Title: Helper functions to use effect size measures as a stopping criterion in Rasch and partial credit trees
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Mirka",
+           family = "Henninger",
+           role = c("aut", "cre"),
+           email = "mail@mirka-henninger.de");
+    person(given = "Jan",
+           family = "Radek",
+           role = c("aut", "cre"),
+		email = "jan.radek@unibas.ch")
+Description: Helper functions to use effect size measures as a stopping criterion in Rasch and partial credit trees.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.1
+Depends: 
+    psychotools (>= 0.4-0),
+    psychotree,
+    partykit,
+    difR,
+    R (>= 2.15)
+Imports:
+    grid,
+    stats,
+    mvtnorm, 
+    sandwich, 
+    strucchange,
+    Formula,
+    utils,
+    rpart,
+    vcd,
+    survival
