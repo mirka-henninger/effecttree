@@ -22,11 +22,15 @@ add_effectsize <- function(object, type, purification){
      type %in% class(object))
     stop("Object must be a modelparty object (as returned from the raschtree or pctree function")
   object$info$effectsize <- get_effectsize(object, type = type, purification = purification, by = "type")
+  ############ FIXME ############
+  ############ add stopping / pruning function
+  #### z.B. if(stopping == TRUE){
+  # which_nodes_A <- apply(object$info$effectsize$classification,2,function(x){all(x == criterion)}) # also add to arguments...
+  # plot(nodeprune.party(RT, ids = which_nodes_A)) # discuss how to select the nodes for which to prune?
+  # }
   class(object) <- c("effecttree", class(object))
   return(object)
 }
-############ FIXME ############
-############ add stopping / pruning function
 #' Plots the effect size tree
 #'
 #' @description Additional options to show the effect size classification in the inner nodes,
