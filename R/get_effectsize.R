@@ -3,20 +3,20 @@
 #' @param object An object of type modelparty
 #' @param type A character indicating the type of the tree object ("raschtree", "pctree")
 #' @param purification A character indicating the type of purification ("none", "iterative")
-#' @param by A character either "node" or "type" defining the structure of the function output
 #'
-#' @return If by = "node": a list with one entry for each node; If by = "type": a list with entries effect size, classification, purification type, and purification_counter
+#' @return A list with entries effect size, classification, purification type, and purification_counter for each inner node
 #'
 #' @examples
 #' \dontrun{
 #' data("DIFSim", package = "psychotree")
 #' RT <- raschtree(resp ~ age + gender + motivation, data = DIFSim)
-#' eff <- get_effectsize(RT, purification = "iterative", by = "type")
+#' eff <- get_effectsize(RT, type = "raschtree", purification = "iterative")
 #' eff
 #' }
 #'
 #' @export
-get_effectsize <- function(object,type, purification, by = "node"){
+get_effectsize <- function(object, type, purification){
+  ####### FIXME add argument multiple-testing correction
   ####### FIXME add match.arg for type (raschtree / pctree)
 
   # check whether object is of type modelparty, and party

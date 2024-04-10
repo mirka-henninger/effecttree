@@ -14,7 +14,7 @@ create_bg_list(object, node_ID, background_cols)
 \item{background_cols}{A character vector indicating the colors of the background panels for left and right terminal nodes of the inner node by which items are colored}
 }
 \value{
-A list named after the terminal nodes containing the colors of the item parameter based on ETS Mantel-Haenszel classification
+A list named after the terminal nodes containing the colors of the item parameter based on effect size classification
 }
 \description{
 Helper function to create a list with colors for left and right child node of the node by which A/B/C coloring is performed

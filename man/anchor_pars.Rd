@@ -7,7 +7,7 @@
 anchor_pars(node_ID)
 }
 \arguments{
-\item{node_ID}{An integer indicating the inner node after which the item paramter should be colored}
+\item{node_ID}{An integer indicating the inner node after which the item parameter should be colored}
 }
 \value{
 function cf that will be used to extract anchored item parameter from the mob object
