@@ -3,6 +3,9 @@
 #' @param object An object of type modelparty
 #' @param type A character indicating the type of the tree ("raschtree", "pctree")
 #' @param purification A character indicating the type of purification ("none", "iterative")
+#' @param reverse_splits A logical indicating whether split should be reversed when the effect size of all items is negligible; default is FALSE
+#' @param direction A character either "topdown" or "bottomup" indicating whether stopping (topdown) or pruning (bottomup) should be performed
+#' @param evalcrit A character or character vector indicating the evalution criterion. The default is "A", for which all nodes are pruned in which all items are categorized as "A"
 #' ############# FIXME ############ add correction for multiple testing
 #'
 #' @return An object of type modelparty with 'info' extended by a list named effectsize containing entries effect size, classification, purification type, and purificationCounter
@@ -11,23 +14,34 @@
 #' \dontrun{
 #' data("DIFSim", package = "psychotree")
 #' RT <- raschtree(resp ~ age + gender + motivation, data = DIFSim)
+#' ## add effect size and plot tree
 #' RT_MH <- add_effectsize(RT, type = "raschtree", purification = "iterative")
 #' RT_MH$info$effectsize
 #' plot(RT_MH, color_by_node = 1)
+#'
+#' ## use stopping (topdown) based on the effect size (all items in category "A" or "B")
+#' ## and plot tree (here no stopping happens)
+#' RT_stopped <- add_effectsize(RT, type = "raschtree", purification = "iterative",
+#'                              reverse_splits = TRUE, direction = "topdown", evalcrit = c("A"))
+#' RT_stopped$info$effectsize
+#' plot(RT_stopped, color_by_node = 2)
 #' }
 #' @export
-add_effectsize <- function(object, type, purification){
+add_effectsize <- function(object, type, purification, reverse_splits = FALSE, direction = c("topdown", "bottomup"), evalcrit = "A"){
   # check whether object is of type modelparty, and party
   if(!(any(class(object) %in% c("modelparty", "party"))) &
      type %in% class(object))
     stop("Object must be a modelparty object (as returned from the raschtree or pctree function")
-  object$info$effectsize <- get_effectsize(object, type = type, purification = purification, by = "type")
-  ############ FIXME ############
-  ############ add stopping / pruning function
-  #### z.B. if(stopping == TRUE){
-  # which_nodes_A <- apply(object$info$effectsize$classification,2,function(x){all(x == criterion)}) # also add to arguments...
-  # plot(nodeprune.party(RT, ids = which_nodes_A)) # discuss how to select the nodes for which to prune?
-  # }
+  object$info$effectsize <- get_effectsize(object, type = type, purification = purification)
+
+  # stopping/pruning function
+  if(isTRUE(reverse_splits)){
+    which_nodes_pruned <- get_prune_nodes(object, direction = direction, evalcrit = evalcrit)
+    if(length(which_nodes_pruned > 0 )){
+      pruned_tree <- nodeprune(object, ids = which_nodes_pruned)
+      object <- add_effectsize(pruned_tree, type = "raschtree", purification = "iterative")
+    }
+  }
   class(object) <- c("effecttree", class(object))
   return(object)
 }

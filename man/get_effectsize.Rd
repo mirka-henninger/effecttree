@@ -4,7 +4,7 @@
 \alias{get_effectsize}
 \title{Function that returns the effect size measure of a tree object}
 \usage{
-get_effectsize(object, type, purification, by = "node")
+get_effectsize(object, type, purification)
 }
 \arguments{
 \item{object}{An object of type modelparty}
@@ -12,11 +12,9 @@ get_effectsize(object, type, purification, by = "node")
 \item{type}{A character indicating the type of the tree object ("raschtree", "pctree")}
 
 \item{purification}{A character indicating the type of purification ("none", "iterative")}
-
-\item{by}{A character either "node" or "type" defining the structure of the function output}
 }
 \value{
-If by = "node": a list with one entry for each node; If by = "type": a list with entries effect size, classification, purification type, and purification_counter
+A list with entries effect size, classification, purification type, and purification_counter for each inner node
 }
 \description{
 Function that returns the effect size measure of a tree object
@@ -25,7 +23,7 @@ Function that returns the effect size measure of a tree object
 \dontrun{
 data("DIFSim", package = "psychotree")
 RT <- raschtree(resp ~ age + gender + motivation, data = DIFSim)
-eff <- get_effectsize(RT, purification = "iterative", by = "type")
+eff <- get_effectsize(RT, type = "raschtree", purification = "iterative")
 eff
 }
 

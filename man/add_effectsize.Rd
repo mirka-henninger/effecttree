@@ -4,14 +4,27 @@
 \alias{add_effectsize}
 \title{Creates a effecttree object based on the original tree with additional effect size information}
 \usage{
-add_effectsize(object, type, purification)
+add_effectsize(
+  object,
+  type,
+  purification,
+  reverse_splits = FALSE,
+  direction = c("topdown", "bottomup"),
+  evalcrit = "A"
+)
 }
 \arguments{
 \item{object}{An object of type modelparty}
 
 \item{type}{A character indicating the type of the tree ("raschtree", "pctree")}
 
-\item{purification}{A character indicating the type of purification ("none", "iterative")
+\item{purification}{A character indicating the type of purification ("none", "iterative")}
+
+\item{reverse_splits}{A logical indicating whether split should be reversed when the effect size of all items is negligible; default is FALSE}
+
+\item{direction}{A character either "topdown" or "bottomup" indicating whether stopping (topdown) or pruning (bottomup) should be performed}
+
+\item{evalcrit}{A character or character vector indicating the evalution criterion. The default is "A", for which all nodes are pruned in which all items are categorized as "A"
 ############# FIXME ############ add correction for multiple testing}
 }
 \value{
@@ -24,8 +37,16 @@ Creates a effecttree object based on the original tree with additional effect si
 \dontrun{
 data("DIFSim", package = "psychotree")
 RT <- raschtree(resp ~ age + gender + motivation, data = DIFSim)
+## add effect size and plot tree
 RT_MH <- add_effectsize(RT, type = "raschtree", purification = "iterative")
 RT_MH$info$effectsize
 plot(RT_MH, color_by_node = 1)
+
+## use stopping (topdown) based on the effect size (all items in category "A" or "B")
+## and plot tree (here no stopping happens)
+RT_stopped <- add_effectsize(RT, type = "raschtree", purification = "iterative",
+                             reverse_splits = TRUE, direction = "topdown", evalcrit = c("A"))
+RT_stopped$info$effectsize
+plot(RT_stopped, color_by_node = 2)
 }
 }
