@@ -2,20 +2,30 @@
 #'
 #' @param object An object of type modelparty
 #' @param type A character indicating the type of the tree object ("raschtree", "pctree")
-#' @param purification A character indicating the type of purification ("none", "iterative")
+#' @param purification A character indicating the type of purification ("none", "2step", "iterative")
+#' @param p.adj A character indicating the correction method for multiple testing. Options are "none", "bonferroni" and "fdr"
+#' @param threshold The threshold of partial gamma above which items should be labeled as DIF/DSF items, default is .21 and .31
 #'
 #' @return A list with entries effect size, classification, purification type, and purification_counter for each inner node
 #'
 #' @examples
 #' \dontrun{
+#' ## raschtree
 #' data("DIFSim", package = "psychotree")
 #' RT <- raschtree(resp ~ age + gender + motivation, data = DIFSim)
 #' eff <- get_effectsize(RT, type = "raschtree", purification = "iterative")
 #' eff
+#' ## pctree
+#' data("VerbalAggression", package = "psychotools")
+#' VerbalAggression$s2 <- VerbalAggression$resp[, 7:12]
+#' VerbalAggression <- subset(VerbalAggression, rowSums(s2) > 0 & rowSums(s2) < 12)
+#' pct <- pctree(s2 ~ anger + gender, data = VerbalAggression)
+#' pct_eff <- get_effectsize(pct, type = "pctree", purification = "2step", p.adj = "fdr")
+#' pct_eff
 #' }
 #'
 #' @export
-get_effectsize <- function(object, type, purification){
+get_effectsize <- function(object, type, purification, p.adj, threshold = c(.21, .31)){
   ####### FIXME add argument multiple-testing correction
   ####### FIXME add match.arg for type (raschtree / pctree)
 
@@ -35,7 +45,7 @@ get_effectsize <- function(object, type, purification){
   sums <- rowSums(dat)
   node_names <- paste("node", ids, sep = "")
 
-  ######### FIXME ######### if-statement to distinguish between delta-MH and partial gamma (something more elegant?)
+  # distinguish raschtree and pctree
   if(type == "raschtree"){
     MH <- lapply(split_groups, function(grp)(calculate_mantelhaenszel(dat = dat, split_group = grp, sums = sums, purification = purification)))
     summary_mantelhaenszel <- function(x){
@@ -48,7 +58,16 @@ get_effectsize <- function(object, type, purification){
     effectsize <- summary_mantelhaenszel(MH)
   }
   if(type == "pctree"){
-    ############ FIXME add partial gamma here
+    pgamma <- lapply(split_groups, function(grp)(calculate_pgamma(dat = dat, split_group = grp, purification = purification, p.adj = p.adj, threshold = threshold)))
+    summary_pgamma <- function(x){
+      list(classification = sapply(x, function(x) x$classification),
+           pgamma = sapply(x, function(x) x$pgamma[1,]),
+           p.adj =  sapply(x, function(x) x$p.adj),
+           purification =  sapply(x, function(x) x$purification),
+           purification_counter = sapply(x, function(x) x$purification_counter)
+      )
+    }
+    effectsize <- summary_pgamma(pgamma)
   }
   return(effectsize)
 }

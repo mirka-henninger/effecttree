@@ -16,7 +16,7 @@ purify_pgamma(dat, group, res_gamma, threshold)
 \item{threshold}{The threshold of partial gamma above which items should be labeled as DIF items}
 }
 \value{
-A vector with purified partial gamma coefficients
+A dataframe including purified partial gamma coefficients
 }
 \description{
 Performs purification of the partial gamma coefficient

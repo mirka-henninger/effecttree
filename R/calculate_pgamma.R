@@ -49,7 +49,11 @@ calculate_pgamma <- function(dat, split_group, purification, p.adj, threshold = 
   }
 
   ## item classification
-  pgamma_classi <- get_ABC_classification(res_pgamma = results_pgamma, res_pgamma_se = results_se, p.adj = p.adj, threshold)
+  if(!all(is.numeric(results_pgamma))){
+    warning("Classification is not possible.")
+    pgamma_classi <- rep(NA, length(results_pgamma))
+  }
+  pgamma_classi <- try(get_ABC_classification(res_pgamma = results_pgamma, res_pgamma_se = results_se, p.adj = p.adj, threshold))
 
   pgamma <- rbind(pgamma = results_pgamma,
                   se = results_se)
@@ -70,12 +74,15 @@ calculate_pgamma <- function(dat, split_group, purification, p.adj, threshold = 
 #' @param res_gamma A vector with partial gamma coefficient
 #' @param threshold The threshold of partial gamma above which items should be labeled as DIF items
 #'
-#' @return A vector with purified partial gamma coefficients
+#' @return A dataframe including purified partial gamma coefficients
 purify_pgamma <- function(dat, group, res_gamma, threshold){
   purified_gamma <- res_gamma
   which_noDIF <- which(abs(res_gamma$gamma) < threshold[1])
   which_DIF <- which(abs(res_gamma$gamma) >= threshold[1])
-  temp_dat <- dat[,which_noDIF]
+  if(which_noDIF <= 1){
+    stop("Purification is not possible, too many items with DIF/DSF.")
+  }
+  temp_dat <- dat[,which_noDIF, drop = FALSE]
 
   # no DIF items
   temp <- quiet(iarm::partgam_DIF(temp_dat,group))
@@ -86,7 +93,7 @@ purify_pgamma <- function(dat, group, res_gamma, threshold){
   if(length(which_DIF) > 0){
     for(i in which_DIF){
       which_noDIF <- sort(c(i, which_noDIF))
-      temp_dat <- dat[,which_noDIF]
+      temp_dat <- dat[,which_noDIF, drop = FALSE]
       temp <- quiet(iarm::partgam_DIF(temp_dat,group))
       purified_gamma[i,] <- temp[i,]
     }

@@ -4,14 +4,18 @@
 \alias{get_effectsize}
 \title{Function that returns the effect size measure of a tree object}
 \usage{
-get_effectsize(object, type, purification)
+get_effectsize(object, type, purification, p.adj, threshold = c(0.21, 0.31))
 }
 \arguments{
 \item{object}{An object of type modelparty}
 
 \item{type}{A character indicating the type of the tree object ("raschtree", "pctree")}
 
-\item{purification}{A character indicating the type of purification ("none", "iterative")}
+\item{purification}{A character indicating the type of purification ("none", "2step", "iterative")}
+
+\item{p.adj}{A character indicating the correction method for multiple testing. Options are "none", "bonferroni" and "fdr"}
+
+\item{threshold}{The threshold of partial gamma above which items should be labeled as DIF/DSF items, default is .21 and .31}
 }
 \value{
 A list with entries effect size, classification, purification type, and purification_counter for each inner node
@@ -21,10 +25,18 @@ Function that returns the effect size measure of a tree object
 }
 \examples{
 \dontrun{
+## raschtree
 data("DIFSim", package = "psychotree")
 RT <- raschtree(resp ~ age + gender + motivation, data = DIFSim)
 eff <- get_effectsize(RT, type = "raschtree", purification = "iterative")
 eff
+## pctree
+data("VerbalAggression", package = "psychotools")
+VerbalAggression$s2 <- VerbalAggression$resp[, 7:12]
+VerbalAggression <- subset(VerbalAggression, rowSums(s2) > 0 & rowSums(s2) < 12)
+pct <- pctree(s2 ~ anger + gender, data = VerbalAggression)
+pct_eff <- get_effectsize(pct, type = "pctree", purification = "2step", p.adj = "fdr")
+pct_eff
 }
 
 }

@@ -8,6 +8,8 @@ add_effectsize(
   object,
   type,
   purification,
+  p.adj,
+  threshold = c(0.21, 0.31),
   reverse_splits = FALSE,
   direction = c("topdown", "bottomup"),
   evalcrit = "A"
@@ -19,6 +21,10 @@ add_effectsize(
 \item{type}{A character indicating the type of the tree ("raschtree", "pctree")}
 
 \item{purification}{A character indicating the type of purification ("none", "iterative")}
+
+\item{p.adj}{A character indicating the correction method for multiple testing. Options are "none", "bonferroni" and "fdr"}
+
+\item{threshold}{The threshold of partial gamma above which items should be labeled as DIF/DSF items, default is .21 and .31}
 
 \item{reverse_splits}{A logical indicating whether split should be reversed when the effect size of all items is negligible; default is FALSE}
 
@@ -35,6 +41,7 @@ Creates a effecttree object based on the original tree with additional effect si
 }
 \examples{
 \dontrun{
+## raschtree
 data("DIFSim", package = "psychotree")
 RT <- raschtree(resp ~ age + gender + motivation, data = DIFSim)
 ## add effect size and plot tree
@@ -48,5 +55,13 @@ RT_stopped <- add_effectsize(RT, type = "raschtree", purification = "iterative",
                              reverse_splits = TRUE, direction = "topdown", evalcrit = c("A"))
 RT_stopped$info$effectsize
 plot(RT_stopped, color_by_node = 2)
+## pctree
+data("VerbalAggression", package = "psychotools")
+VerbalAggression$s2 <- VerbalAggression$resp[, 7:12]
+VerbalAggression <- subset(VerbalAggression, rowSums(s2) > 0 & rowSums(s2) < 12)
+pct <- pctree(s2 ~ anger + gender, data = VerbalAggression)
+pct_eff <- add_effectsize(pct, type = "pctree", purification = "2step", p.adj = "fdr")
+pct_eff$info$effectsize
+plot(pct_eff, color_by_node = 1)
 }
 }

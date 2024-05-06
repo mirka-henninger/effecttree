@@ -3,6 +3,8 @@
 #' @param object An object of type modelparty
 #' @param type A character indicating the type of the tree ("raschtree", "pctree")
 #' @param purification A character indicating the type of purification ("none", "iterative")
+#' @param p.adj A character indicating the correction method for multiple testing. Options are "none", "bonferroni" and "fdr"
+#' @param threshold The threshold of partial gamma above which items should be labeled as DIF/DSF items, default is .21 and .31
 #' @param reverse_splits A logical indicating whether split should be reversed when the effect size of all items is negligible; default is FALSE
 #' @param direction A character either "topdown" or "bottomup" indicating whether stopping (topdown) or pruning (bottomup) should be performed
 #' @param evalcrit A character or character vector indicating the evalution criterion. The default is "A", for which all nodes are pruned in which all items are categorized as "A"
@@ -12,6 +14,7 @@
 #'
 #' @examples
 #' \dontrun{
+#' ## raschtree
 #' data("DIFSim", package = "psychotree")
 #' RT <- raschtree(resp ~ age + gender + motivation, data = DIFSim)
 #' ## add effect size and plot tree
@@ -25,21 +28,29 @@
 #'                              reverse_splits = TRUE, direction = "topdown", evalcrit = c("A"))
 #' RT_stopped$info$effectsize
 #' plot(RT_stopped, color_by_node = 2)
+#' ## pctree
+#' data("VerbalAggression", package = "psychotools")
+#' VerbalAggression$s2 <- VerbalAggression$resp[, 7:12]
+#' VerbalAggression <- subset(VerbalAggression, rowSums(s2) > 0 & rowSums(s2) < 12)
+#' pct <- pctree(s2 ~ anger + gender, data = VerbalAggression)
+#' pct_eff <- add_effectsize(pct, type = "pctree", purification = "2step", p.adj = "fdr")
+#' pct_eff$info$effectsize
+#' plot(pct_eff, color_by_node = 1)
 #' }
 #' @export
-add_effectsize <- function(object, type, purification, reverse_splits = FALSE, direction = c("topdown", "bottomup"), evalcrit = "A"){
+add_effectsize <- function(object, type, purification, p.adj, threshold = c(.21, .31), reverse_splits = FALSE, direction = c("topdown", "bottomup"), evalcrit = "A"){
   # check whether object is of type modelparty, and party
   if(!(any(class(object) %in% c("modelparty", "party"))) &
      type %in% class(object))
     stop("Object must be a modelparty object (as returned from the raschtree or pctree function")
-  object$info$effectsize <- get_effectsize(object, type = type, purification = purification)
+  object$info$effectsize <- get_effectsize(object, type = type, purification = purification, p.adj = p.adj)
 
   # stopping/pruning function
   if(isTRUE(reverse_splits)){
     which_nodes_pruned <- get_prune_nodes(object, direction = direction, evalcrit = evalcrit)
     if(length(which_nodes_pruned > 0 )){
       pruned_tree <- nodeprune(object, ids = which_nodes_pruned)
-      object <- add_effectsize(pruned_tree, type = "raschtree", purification = "iterative")
+      object <- add_effectsize(pruned_tree, type = type, purification = purification)
     }
   }
   class(object) <- c("effecttree", class(object))
