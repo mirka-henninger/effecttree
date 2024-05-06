@@ -22,6 +22,7 @@
 #' @import survival
 #' @import vcd
 #' @importFrom difR mantelHaenszel
+#' @importFrom iarm partgam_DIF
 #' @importFrom utils capture.output
 #' @importFrom utils head
 #' @importFrom utils tail
@@ -39,6 +40,7 @@
 #' @importFrom partykit is.terminal
 #' @importFrom partykit id_node
 #' @importFrom partykit split_node
+#' @importFrom SimDesign quiet
 #'
 #'
 NULL
