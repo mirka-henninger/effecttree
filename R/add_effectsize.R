@@ -28,14 +28,6 @@
 #'                              reverse_splits = TRUE, direction = "topdown", evalcrit = c("A"))
 #' RT_stopped$info$effectsize
 #' plot(RT_stopped, color_by_node = 2)
-#' ## pctree
-#' data("VerbalAggression", package = "psychotools")
-#' VerbalAggression$s2 <- VerbalAggression$resp[, 7:12]
-#' VerbalAggression <- subset(VerbalAggression, rowSums(s2) > 0 & rowSums(s2) < 12)
-#' pct <- pctree(s2 ~ anger + gender, data = VerbalAggression)
-#' pct_eff <- add_effectsize(pct, model = "pctree", purification = "2step", p.adj = "fdr")
-#' pct_eff$info$effectsize
-#' plot(pct_eff, color_by_node = 1)
 #' }
 #' @export
 add_effectsize <- function(object, model, purification, p.adj, threshold = c(.21, .31), reverse_splits = FALSE, direction = c("topdown", "bottomup"), evalcrit = "A"){
@@ -63,6 +55,7 @@ add_effectsize <- function(object, model, purification, p.adj, threshold = c(.21
 #' and option to turn on a background color so you can see which are the left and right terminal nodes for the inner nodes which items are colored
 #'
 #' @param x An object of type effecttree with 'info' extended by a list named effect size, classification, purification type, and purificationCounter
+#' @param type character specifying the type of predictions or plot ("profile" for item difficulties/locations, "regions" for regions of expected item responses)
 #' @param show_classification A logical with default is TRUE: Should the classification be shown in each inner node?
 #' @param color_by_node An integer indicating the inner node after which the item parameter should be colored
 #' @param ABC_colors A character vector of length three indicating the colors in which items classified as A/B/C should be displayed
@@ -79,22 +72,27 @@ plot.effecttree <- function(x,
                             ABC_colors = c("#99e1e3", "#ba6100", "#6c0200"),
                             ABC_size = c(.4,.75,.9),
                             node_background = c("#eee3af", "#aeaeae"), ...){
-
   # define inner and terminal panels
+  tp_args <- list(...)
   inner_panel <- node_inner
   if(show_classification == TRUE) inner_panel <- show_effectsize
 
-  terminal_panel <- node_profileplot
-  if(!is.null(color_by_node)) terminal_panel <- color_by_node(node_ID = color_by_node,
-                                                              class_color = ABC_colors,
-                                                              class_size = ABC_size,
-                                                              panel_color = node_background)
-
-  if(type == "regions"){
-    terminal_panel <- psychotree::node_regionplot
+  if(type == "profile"){
+    terminal_panel <- node_profileplot
+    if(!is.null(color_by_node)) terminal_panel <- color_by_node(node_ID = color_by_node,
+                                                                class_color = ABC_colors,
+                                                                class_size = ABC_size,
+                                                                panel_color = node_background)
   }
-  # plot raschtreeMH based on the original raschtree
+  if(type == "regions"){
+    terminal_panel <- node_regionplot
+    if(!is.null(color_by_node)){
+      tp_args[['node_col_fun']] = color_by_node_regions(x, color_by_node)
+    }
+  }
+  # plot effecttree based on the original raschtree
   partykit::plot.modelparty(x,
                             terminal_panel = terminal_panel,
-                            inner_panel = inner_panel, ...)
+                            inner_panel = inner_panel,
+                            tp_args = tp_args)
 }

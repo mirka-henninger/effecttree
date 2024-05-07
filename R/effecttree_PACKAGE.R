@@ -41,6 +41,8 @@
 #' @importFrom partykit id_node
 #' @importFrom partykit split_node
 #' @importFrom SimDesign quiet
+#' @importFrom grDevices hcl.colors
+#' @importFrom grDevices rainbow
 #'
 #'
 NULL

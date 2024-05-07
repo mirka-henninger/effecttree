@@ -6,6 +6,7 @@
 \usage{
 \method{plot}{effecttree}(
   x,
+  type = "profile",
   show_classification = TRUE,
   color_by_node = NULL,
   ABC_colors = c("#99e1e3", "#ba6100", "#6c0200"),
@@ -16,6 +17,8 @@
 }
 \arguments{
 \item{x}{An object of type effecttree with 'info' extended by a list named effect size, classification, purification type, and purificationCounter}
+
+\item{type}{character specifying the type of predictions or plot ("profile" for item difficulties/locations, "regions" for regions of expected item responses)}
 
 \item{show_classification}{A logical with default is TRUE: Should the classification be shown in each inner node?}
 

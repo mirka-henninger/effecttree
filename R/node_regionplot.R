@@ -1,8 +1,31 @@
+color_by_node_regions <- function(object, node_ID){
+  peach <- function (n) {
+    return (grDevices::hcl.colors(n, "Peach"))
+  }
+  pars <- c(gray.colors, peach, grDevices::rainbow)
+  nodes <- node_party(object) # where the splits are
+  inner_nodes <- get_inner_nodes(nodes)
+  inner_nodes_IDs <- sapply(inner_nodes, function(x) x$id)
+  which_ID <- which(inner_nodes_IDs == node_ID)
+  terminal_nodes <- get_terminal_nodes(inner_nodes[[which_ID]])
+  eff_classi <- as.vector(object$info$effectsize$classification[,paste0("node", node_ID)])
+  color_fun <- function(x){ifelse(x == "A", pars[1], ifelse(x == "B", pars[2], ifelse(x == "C", pars[3], x)))}
+  color_by <- color_fun(eff_classi)
+
+  myfun <- function(object, termID, n_items){
+    if(termID %in% terminal_nodes){
+      return(color_by)
+    } else{
+      return(rep(list(gray.colors), n_items))
+    }
+  }
+  return(myfun)
+}
 node_regionplot <- function (mobobj, names = FALSE, abbreviate = TRUE, type = c("mode",
-                                                             "median", "mean"), ref = NULL, ylim = NULL, off = 0.1,
-                             col_fun = gray.colors,
-          bg = "white", uo_show = TRUE, uo_col = "red", uo_lty = 2,
-          uo_lwd = 1.25, ylines = 2)
+                                                                                "median", "mean"), ref = NULL, ylim = NULL, off = 0.1,
+                             col_fun = gray.colors, node_col_fun = NULL,
+                             bg = "white", uo_show = TRUE, uo_col = "red", uo_lty = 2,
+                             uo_lwd = 1.25, ylines = 2)
 {
   stopifnot(!is.null(mobobj))
   stopifnot(off >= 0)
@@ -12,20 +35,21 @@ node_regionplot <- function (mobobj, names = FALSE, abbreviate = TRUE, type = c(
                                            vcov = FALSE)
 
   node <- nodeids(mobobj, terminal = TRUE)
-  delta_lst <- partykit:::apply_to_models(mobobj, node, FUN = threshparlst,
-                               ref = ref, type = type)
+  delta_lst <- apply_to_models(mobobj, node, FUN = threshparlst,
+                                          ref = ref, type = type)
   m <- max(sapply(delta_lst, length))
   xi <- 0:m + c(0:(m - 1), m - 1) * off
   xlim <- c(xi[1], xi[m + 1])
 
-  if(!is.list(col_fun)){
-    col_fun_list <- rep(list(col_fun), m)
-  } else{
-    col_fun_list <- col_fun
-  }
+    if(!is.list(col_fun)){
+      col_fun_list <- rep(list(col_fun), m)
+    } else{
+      col_fun_list <- col_fun
+    }
+
   if (is.null(ylim))
-    ylim <- extendrange(unlist(delta_lst, use.names = FALSE),
-                        f = 0.25)
+    ylim <- grDevices::extendrange(unlist(delta_lst, use.names = FALSE),
+                                   f = 0.25)
   if (isTRUE(names)) {
     names <- lapply(delta_lst, names)
   }
@@ -55,6 +79,9 @@ node_regionplot <- function (mobobj, names = FALSE, abbreviate = TRUE, type = c(
   names(names) <- names(delta_lst) <- node
   panelfun <- function(node) {
     id <- as.character(id_node(node))
+  if(!is.null(node_col_fun)) {
+    col_fun_list <- node_col_fun(mobobj, termID = id, n_items = m)
+  }
     delta_unsorted <- delta_lst[[id]]
     lab <- paste("node", id, sep = "")
     namesi <- names[[id]]
