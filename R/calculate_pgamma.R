@@ -79,7 +79,7 @@ purify_pgamma <- function(dat, group, res_gamma, threshold){
   purified_gamma <- res_gamma
   which_noDIF <- which(abs(res_gamma$gamma) < threshold[1])
   which_DIF <- which(abs(res_gamma$gamma) >= threshold[1])
-  if(which_noDIF <= 1){
+  if(length(which_noDIF) <= 1){
     stop("Purification is not possible, too many items with DIF/DSF.")
   }
   temp_dat <- dat[,which_noDIF, drop = FALSE]

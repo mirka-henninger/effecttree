@@ -50,7 +50,7 @@ add_effectsize <- function(object, model, purification, p.adj, threshold = c(.21
     which_nodes_pruned <- get_prune_nodes(object, direction = direction, evalcrit = evalcrit)
     if(length(which_nodes_pruned > 0 )){
       pruned_tree <- nodeprune(object, ids = which_nodes_pruned)
-      object <- add_effectsize(pruned_tree, model = model, purification = purification)
+      object <- add_effectsize(pruned_tree, model = model, purification = purification,  p.adj = p.adj)
     }
   }
   class(object) <- c("effecttree", class(object))
@@ -73,6 +73,7 @@ add_effectsize <- function(object, model, purification, p.adj, threshold = c(.21
 #'
 #' @export
 plot.effecttree <- function(x,
+                            type = "profile",
                             show_classification = TRUE,
                             color_by_node = NULL,
                             ABC_colors = c("#99e1e3", "#ba6100", "#6c0200"),
@@ -89,6 +90,9 @@ plot.effecttree <- function(x,
                                                               class_size = ABC_size,
                                                               panel_color = node_background)
 
+  if(type == "regions"){
+    terminal_panel <- psychotree::node_regionplot
+  }
   # plot raschtreeMH based on the original raschtree
   partykit::plot.modelparty(x,
                             terminal_panel = terminal_panel,
