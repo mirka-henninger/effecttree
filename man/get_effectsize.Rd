@@ -4,12 +4,12 @@
 \alias{get_effectsize}
 \title{Function that returns the effect size measure of a tree object}
 \usage{
-get_effectsize(object, type, purification, p.adj, threshold = c(0.21, 0.31))
+get_effectsize(object, model, purification, p.adj, threshold = c(0.21, 0.31))
 }
 \arguments{
 \item{object}{An object of type modelparty}
 
-\item{type}{A character indicating the type of the tree object ("raschtree", "pctree")}
+\item{model}{A character indicating the model in the tree object ("raschtree", "pctree")}
 
 \item{purification}{A character indicating the type of purification ("none", "2step", "iterative")}
 
@@ -28,14 +28,14 @@ Function that returns the effect size measure of a tree object
 ## raschtree
 data("DIFSim", package = "psychotree")
 RT <- raschtree(resp ~ age + gender + motivation, data = DIFSim)
-eff <- get_effectsize(RT, type = "raschtree", purification = "iterative")
+eff <- get_effectsize(RT, model = "raschtree", purification = "iterative")
 eff
 ## pctree
 data("VerbalAggression", package = "psychotools")
 VerbalAggression$s2 <- VerbalAggression$resp[, 7:12]
 VerbalAggression <- subset(VerbalAggression, rowSums(s2) > 0 & rowSums(s2) < 12)
 pct <- pctree(s2 ~ anger + gender, data = VerbalAggression)
-pct_eff <- get_effectsize(pct, type = "pctree", purification = "2step", p.adj = "fdr")
+pct_eff <- get_effectsize(pct, model = "pctree", purification = "2step", p.adj = "fdr")
 pct_eff
 }
 

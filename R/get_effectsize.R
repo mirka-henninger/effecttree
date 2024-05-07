@@ -1,7 +1,7 @@
 #' Function that returns the effect size measure of a tree object
 #'
 #' @param object An object of type modelparty
-#' @param type A character indicating the type of the tree object ("raschtree", "pctree")
+#' @param model A character indicating the model in the tree object ("raschtree", "pctree")
 #' @param purification A character indicating the type of purification ("none", "2step", "iterative")
 #' @param p.adj A character indicating the correction method for multiple testing. Options are "none", "bonferroni" and "fdr"
 #' @param threshold The threshold of partial gamma above which items should be labeled as DIF/DSF items, default is .21 and .31
@@ -13,25 +13,25 @@
 #' ## raschtree
 #' data("DIFSim", package = "psychotree")
 #' RT <- raschtree(resp ~ age + gender + motivation, data = DIFSim)
-#' eff <- get_effectsize(RT, type = "raschtree", purification = "iterative")
+#' eff <- get_effectsize(RT, model = "raschtree", purification = "iterative")
 #' eff
 #' ## pctree
 #' data("VerbalAggression", package = "psychotools")
 #' VerbalAggression$s2 <- VerbalAggression$resp[, 7:12]
 #' VerbalAggression <- subset(VerbalAggression, rowSums(s2) > 0 & rowSums(s2) < 12)
 #' pct <- pctree(s2 ~ anger + gender, data = VerbalAggression)
-#' pct_eff <- get_effectsize(pct, type = "pctree", purification = "2step", p.adj = "fdr")
+#' pct_eff <- get_effectsize(pct, model = "pctree", purification = "2step", p.adj = "fdr")
 #' pct_eff
 #' }
 #'
 #' @export
-get_effectsize <- function(object, type, purification, p.adj, threshold = c(.21, .31)){
+get_effectsize <- function(object, model, purification, p.adj, threshold = c(.21, .31)){
   ####### FIXME add argument multiple-testing correction
-  ####### FIXME add match.arg for type (raschtree / pctree)
+  ####### FIXME add match.arg for model (raschtree / pctree)
 
   # check whether object is of type modelparty, and party
   if(!(any(class(object) %in% c("modelparty", "party"))) &
-     type %in% class(object))
+     model %in% class(object))
     stop("Object must be an model object (as returned from the raschtree or pctree function")
 
   # extract information from tree
@@ -46,7 +46,7 @@ get_effectsize <- function(object, type, purification, p.adj, threshold = c(.21,
   node_names <- paste("node", ids, sep = "")
 
   # distinguish raschtree and pctree
-  if(type == "raschtree"){
+  if(model == "raschtree"){
     MH <- lapply(split_groups, function(grp)(calculate_mantelhaenszel(dat = dat, split_group = grp, sums = sums, purification = purification)))
     summary_mantelhaenszel <- function(x){
       list(classification = sapply(x, function(x) x$classification),
@@ -57,7 +57,7 @@ get_effectsize <- function(object, type, purification, p.adj, threshold = c(.21,
     }
     effectsize <- summary_mantelhaenszel(MH)
   }
-  if(type == "pctree"){
+  if(model == "pctree"){
     pgamma <- lapply(split_groups, function(grp)(calculate_pgamma(dat = dat, split_group = grp, purification = purification, p.adj = p.adj, threshold = threshold)))
     summary_pgamma <- function(x){
       list(classification = sapply(x, function(x) x$classification),

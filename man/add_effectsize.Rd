@@ -6,7 +6,7 @@
 \usage{
 add_effectsize(
   object,
-  type,
+  model,
   purification,
   p.adj,
   threshold = c(0.21, 0.31),
@@ -18,7 +18,7 @@ add_effectsize(
 \arguments{
 \item{object}{An object of type modelparty}
 
-\item{type}{A character indicating the type of the tree ("raschtree", "pctree")}
+\item{model}{A character indicating the model in the tree ("raschtree", "pctree")}
 
 \item{purification}{A character indicating the type of purification ("none", "iterative")}
 
@@ -45,13 +45,13 @@ Creates a effecttree object based on the original tree with additional effect si
 data("DIFSim", package = "psychotree")
 RT <- raschtree(resp ~ age + gender + motivation, data = DIFSim)
 ## add effect size and plot tree
-RT_MH <- add_effectsize(RT, type = "raschtree", purification = "iterative")
+RT_MH <- add_effectsize(RT, model = "raschtree", purification = "iterative")
 RT_MH$info$effectsize
 plot(RT_MH, color_by_node = 1)
 
 ## use stopping (topdown) based on the effect size (all items in category "A" or "B")
 ## and plot tree (here no stopping happens)
-RT_stopped <- add_effectsize(RT, type = "raschtree", purification = "iterative",
+RT_stopped <- add_effectsize(RT, model = "raschtree", purification = "iterative",
                              reverse_splits = TRUE, direction = "topdown", evalcrit = c("A"))
 RT_stopped$info$effectsize
 plot(RT_stopped, color_by_node = 2)
@@ -60,8 +60,8 @@ data("VerbalAggression", package = "psychotools")
 VerbalAggression$s2 <- VerbalAggression$resp[, 7:12]
 VerbalAggression <- subset(VerbalAggression, rowSums(s2) > 0 & rowSums(s2) < 12)
 pct <- pctree(s2 ~ anger + gender, data = VerbalAggression)
-pct_eff <- add_effectsize(pct, type = "pctree", purification = "2step", p.adj = "fdr")
+pct_eff <- add_effectsize(pct, model = "pctree", purification = "2step", p.adj = "fdr")
 pct_eff$info$effectsize
-plot(pct_eff, color_by_node = 1)
+plot(pct_eff, type = "regions")
 }
 }
