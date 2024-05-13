@@ -48,13 +48,15 @@ calculate_pgamma <- function(dat, split_group, purification, p.adj, threshold = 
     }
   }
 
-  ## item classification
-  if(!all(is.numeric(results_pgamma))){
-    warning("Classification is not possible.")
-    pgamma_classi <- rep(NA, length(results_pgamma))
+  ## check pgamma for missing values
+  if(any(is.na(results_pgamma))){
+    warning("Partial gamma could not be computed for all items.")
   }
+
+  ## item classification
   pgamma_classi <- try(get_ABC_classification(res_pgamma = results_pgamma, res_pgamma_se = results_se, p.adj = p.adj, threshold))
 
+  ## prepare output
   pgamma <- rbind(pgamma = results_pgamma,
                   se = results_se)
   colnames(pgamma) <- paste("item", 1:ncol(dat), sep = "")
