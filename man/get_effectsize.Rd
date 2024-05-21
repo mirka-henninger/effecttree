@@ -30,13 +30,6 @@ data("DIFSim", package = "psychotree")
 RT <- raschtree(resp ~ age + gender + motivation, data = DIFSim)
 eff <- get_effectsize(RT, model = "raschtree", purification = "iterative")
 eff
-## pctree
-data("VerbalAggression", package = "psychotools")
-VerbalAggression$s2 <- VerbalAggression$resp[, 7:12]
-VerbalAggression <- subset(VerbalAggression, rowSums(s2) > 0 & rowSums(s2) < 12)
-pct <- pctree(s2 ~ anger + gender, data = VerbalAggression)
-pct_eff <- get_effectsize(pct, model = "pctree", purification = "2step", p.adj = "fdr")
-pct_eff
 }
 
 }
