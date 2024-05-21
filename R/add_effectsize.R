@@ -28,17 +28,20 @@
 #' RT_stopped$info$effectsize
 #' plot(RT_stopped, color_by_node = 2)
 #'
-#' ## example polytomous items, with split-reversal:
+#' ## example polytomous items, with/out split-reversal:
 #' data("dat_organization")
 #' items <- as.data.frame(dat_organization[, grep("item", names(dat_organization))])
 #' dat_organization$items <- apply(items,2,as.numeric)
 #' pc_tree <- pctree(items ~ sex + age + length_service + same_position + leadership,
 #'                   data = dat_organization)
 #' plot(pc_tree)
-#' pc_tree_pgamma <- add_effectsize(pc_tree, purification = "iterative", p.adj = "fdr",
-#'                    reverse_splits = TRUE, direction = "topdown")
+#' pc_tree_pgamma <- add_effectsize(pc_tree, purification = "iterative", p.adj = "fdr")
+#' pc_tree_pgamma_stopped <- add_effectsize(pc_tree, purification = "iterative", p.adj = "fdr",
+#'                                          reverse_splits = TRUE, direction = "topdown")
 #' plot(pc_tree_pgamma, color_by_node = 1)
 #' plot(pc_tree_pgamma, type = "regions", color_by_node = 1)
+#' plot(pc_tree_pgamma_stopped, color_by_node = 1)
+#' plot(pc_tree_pgamma_stopped, type = "regions", color_by_node = 1)
 #' }
 #' @export
 add_effectsize <- function(object, purification, p.adj, threshold = c(.21, .31), reverse_splits = FALSE, direction = c("topdown", "bottomup"), evalcrit = "A"){

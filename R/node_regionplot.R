@@ -1,8 +1,11 @@
 color_by_node_regions <- function(object, node_ID){
-  peach <- function (n) {
+  col_B <- function (n) {
+    return (grDevices::hcl.colors(n, "Teal"))
+  }
+  col_C <- function (n) {
     return (grDevices::hcl.colors(n, "Peach"))
   }
-  pars <- c(gray.colors, peach, grDevices::rainbow)
+  pars <- c(gray.colors, col_B, col_C)
   nodes <- node_party(object) # where the splits are
   inner_nodes <- get_inner_nodes(nodes)
   inner_nodes_IDs <- sapply(inner_nodes, function(x) x$id)
