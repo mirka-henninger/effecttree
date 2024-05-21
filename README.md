@@ -11,12 +11,23 @@ library(effecttree)
 It uses functions from the [psychotree](https://github.com/cran/psychotree/) and [partykit](https://github.com/cran/partykit) packages to fit the rasch tree and partial credit tree in the recursive partitioning framework. This repository adds to these packages by integrating effect size measures (Mantel-Haenszel odds ratio, partial gamma coefficient) for differential item functioning and differential step functioning. These effect size measures can be added to the trees, allow researchers to display effect sizes for each split, to reverse splits when effect sizes are negligible, and to color items in each end node based on the effect size measure. Additional helper functions are provided to extract the effect size measures from the tree object. This repository is currently under development and undergoes ongoing changes and improvement. Please report any bugs that you encounter. 
 
 ``` r
+## example dichotomous items: 
 data("SPISA", package = "psychotree")
 RT <- raschtree(spisa ~ gender + age + semester, data = SPISA)
-RT_eff <- add_effectsize(RT, model = 'raschtree', purification = "iterative", p.adj = "fdr", reverse_splits = FALSE)
+RT_eff <- add_effectsize(RT, model = 'raschtree', purification = "iterative", p.adj = "fdr", reverse_splits = FALSE, direction = "topdown")
 RT_eff$info$effectsize
 plot(RT_eff, color_by_node = 1)
 plot(RT_eff, color_by_node = 3)
+
+## example polytomous items: 
+data(iarm::desc2)
+desc2$items <- as.matrix(desc2[,grep("DESC", names(desc2))])
+pc_tree <- pctree(items ~ group + gender + agegroup, data = desc2)
+pc_tree_pgamma <- add_effectsize(pc_tree, model = "pctree", purification = "iterative", p.adj = "fdr", reverse_splits = TRUE, direction = "topdown")
+plot(pc_tree_pgamma, color_by_node = 1)
+plot(pc_tree_pgamma, color_by_node = 2)
+plot(pc_tree_pgamma, type = "regions", color_by_node = 1)
+plot(pc_tree_pgamma, type = "regions", color_by_node = 2)
 ```
 
 ## References
