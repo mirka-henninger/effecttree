@@ -6,7 +6,6 @@
 \usage{
 add_effectsize(
   object,
-  model,
   purification,
   p.adj,
   threshold = c(0.21, 0.31),
@@ -17,8 +16,6 @@ add_effectsize(
 }
 \arguments{
 \item{object}{An object of type modelparty}
-
-\item{model}{A character indicating the model in the tree ("raschtree", "pctree")}
 
 \item{purification}{A character indicating the type of purification ("none", "iterative")}
 
@@ -45,15 +42,37 @@ Creates a effecttree object based on the original tree with additional effect si
 data("DIFSim", package = "psychotree")
 RT <- raschtree(resp ~ age + gender + motivation, data = DIFSim)
 ## add effect size and plot tree
-RT_MH <- add_effectsize(RT, model = "raschtree", purification = "iterative")
+RT_MH <- add_effectsize(RT, purification = "iterative")
 RT_MH$info$effectsize
 plot(RT_MH, color_by_node = 1)
 
 ## use stopping (topdown) based on the effect size (all items in category "A" or "B")
 ## and plot tree (here no stopping happens)
-RT_stopped <- add_effectsize(RT, model = "raschtree", purification = "iterative",
+RT_stopped <- add_effectsize(RT, purification = "iterative",
                              reverse_splits = TRUE, direction = "topdown", evalcrit = c("A"))
 RT_stopped$info$effectsize
 plot(RT_stopped, color_by_node = 2)
+
+## example polytomous items:
+data("iarm::desc2")
+desc2$items <- as.matrix(desc2[,grep("DESC", names(desc2))])
+pc_tree <- pctree(items ~ group + gender + agegroup, data = desc2)
+pc_tree_pgamma <- add_effectsize(pc_tree, purification = "iterative", p.adj = "fdr")
+plot(pc_tree_pgamma, color_by_node = 1)
+plot(pc_tree_pgamma, color_by_node = 2)
+plot(pc_tree_pgamma, type = "regions", color_by_node = 1)
+plot(pc_tree_pgamma, type = "regions", color_by_node = 2)
+
+## example polytomous items, with split-reversal:
+data("dat_organization")
+items <- as.data.frame(dat_organization[, grep("item", names(dat_organization))])
+dat_organization$items <- apply(items,2,as.numeric)
+pc_tree <- pctree(items ~ sex + age + length_service + same_position + leadership,
+                  data = dat_organization)
+plot(pc_tree)
+pc_tree_pgamma <- add_effectsize(pc_tree, purification = "iterative", p.adj = "fdr",
+                   reverse_splits = TRUE, direction = "topdown")
+plot(pc_tree_pgamma, color_by_node = 1)
+plot(pc_tree_pgamma, type = "regions", color_by_node = 1)
 }
 }

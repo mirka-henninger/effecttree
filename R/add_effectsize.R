@@ -1,7 +1,6 @@
 #' Creates a effecttree object based on the original tree with additional effect size information
 #'
 #' @param object An object of type modelparty
-#' @param model A character indicating the model in the tree ("raschtree", "pctree")
 #' @param purification A character indicating the type of purification ("none", "iterative")
 #' @param p.adj A character indicating the correction method for multiple testing. Options are "none", "bonferroni" and "fdr"
 #' @param threshold The threshold of partial gamma above which items should be labeled as DIF/DSF items, default is .21 and .31
@@ -18,33 +17,35 @@
 #' data("DIFSim", package = "psychotree")
 #' RT <- raschtree(resp ~ age + gender + motivation, data = DIFSim)
 #' ## add effect size and plot tree
-#' RT_MH <- add_effectsize(RT, model = "raschtree", purification = "iterative")
+#' RT_MH <- add_effectsize(RT, purification = "iterative")
 #' RT_MH$info$effectsize
 #' plot(RT_MH, color_by_node = 1)
 #'
 #' ## use stopping (topdown) based on the effect size (all items in category "A" or "B")
 #' ## and plot tree (here no stopping happens)
-#' RT_stopped <- add_effectsize(RT, model = "raschtree", purification = "iterative",
+#' RT_stopped <- add_effectsize(RT, purification = "iterative",
 #'                              reverse_splits = TRUE, direction = "topdown", evalcrit = c("A"))
 #' RT_stopped$info$effectsize
 #' plot(RT_stopped, color_by_node = 2)
 #'
-#' ## example polytomous items:
-#' data(iarm::desc2)
-#' desc2$items <- as.matrix(desc2[,grep("DESC", names(desc2))])
-#' pc_tree <- pctree(items ~ group + gender + agegroup, data = desc2)
-#' pc_tree_pgamma <- add_effectsize(pc_tree, model = "pctree", purification = "iterative", p.adj = "fdr", reverse_splits = TRUE, direction = "topdown")
+#' ## example polytomous items, with split-reversal:
+#' data("dat_organization")
+#' items <- as.data.frame(dat_organization[, grep("item", names(dat_organization))])
+#' dat_organization$items <- apply(items,2,as.numeric)
+#' pc_tree <- pctree(items ~ sex + age + length_service + same_position + leadership,
+#'                   data = dat_organization)
+#' plot(pc_tree)
+#' pc_tree_pgamma <- add_effectsize(pc_tree, purification = "iterative", p.adj = "fdr",
+#'                    reverse_splits = TRUE, direction = "topdown")
 #' plot(pc_tree_pgamma, color_by_node = 1)
-#' plot(pc_tree_pgamma, color_by_node = 2)
 #' plot(pc_tree_pgamma, type = "regions", color_by_node = 1)
-#' plot(pc_tree_pgamma, type = "regions", color_by_node = 2)
 #' }
 #' @export
-add_effectsize <- function(object, model, purification, p.adj, threshold = c(.21, .31), reverse_splits = FALSE, direction = c("topdown", "bottomup"), evalcrit = "A"){
+add_effectsize <- function(object, purification, p.adj, threshold = c(.21, .31), reverse_splits = FALSE, direction = c("topdown", "bottomup"), evalcrit = "A"){
   # check whether object is of type modelparty, and party
-  if(!(any(class(object) %in% c("modelparty", "party"))) &
-     model %in% class(object))
+  if(!(any(class(object) %in% c("modelparty", "party"))))
     stop("Object must be a modelparty object (as returned from the raschtree or pctree function")
+  model <- class(object)[1]
   object$info$effectsize <- get_effectsize(object, model = model, purification = purification, p.adj = p.adj)
 
   # stopping/pruning function
@@ -52,7 +53,7 @@ add_effectsize <- function(object, model, purification, p.adj, threshold = c(.21
     which_nodes_pruned <- get_prune_nodes(object, direction = direction, evalcrit = evalcrit)
     if(length(which_nodes_pruned > 0 )){
       pruned_tree <- nodeprune(object, ids = which_nodes_pruned)
-      object <- add_effectsize(pruned_tree, model = model, purification = purification,  p.adj = p.adj)
+      object <- add_effectsize(pruned_tree, purification = purification,  p.adj = p.adj)
     }
   }
   class(object) <- c("effecttree", class(object))
