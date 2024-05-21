@@ -28,6 +28,16 @@
 #'                              reverse_splits = TRUE, direction = "topdown", evalcrit = c("A"))
 #' RT_stopped$info$effectsize
 #' plot(RT_stopped, color_by_node = 2)
+#'
+#' ## example polytomous items:
+#' data(iarm::desc2)
+#' desc2$items <- as.matrix(desc2[,grep("DESC", names(desc2))])
+#' pc_tree <- pctree(items ~ group + gender + agegroup, data = desc2)
+#' pc_tree_pgamma <- add_effectsize(pc_tree, model = "pctree", purification = "iterative", p.adj = "fdr", reverse_splits = TRUE, direction = "topdown")
+#' plot(pc_tree_pgamma, color_by_node = 1)
+#' plot(pc_tree_pgamma, color_by_node = 2)
+#' plot(pc_tree_pgamma, type = "regions", color_by_node = 1)
+#' plot(pc_tree_pgamma, type = "regions", color_by_node = 2)
 #' }
 #' @export
 add_effectsize <- function(object, model, purification, p.adj, threshold = c(.21, .31), reverse_splits = FALSE, direction = c("topdown", "bottomup"), evalcrit = "A"){
