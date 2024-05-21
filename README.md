@@ -14,20 +14,10 @@ It uses functions from the [psychotree](https://github.com/cran/psychotree/) and
 ## example dichotomous items: 
 data("SPISA", package = "psychotree")
 RT <- raschtree(spisa ~ gender + age + semester, data = SPISA)
-RT_eff <- add_effectsize(RT, model = 'raschtree', purification = "iterative", p.adj = "fdr", reverse_splits = FALSE, direction = "topdown")
+RT_eff <- add_effectsize(RT, purification = "iterative", p.adj = "fdr", reverse_splits = FALSE, direction = "topdown")
 RT_eff$info$effectsize
 plot(RT_eff, color_by_node = 1)
 plot(RT_eff, color_by_node = 3)
-
-## example polytomous items: 
-data(iarm::desc2)
-desc2$items <- as.matrix(desc2[,grep("DESC", names(desc2))])
-pc_tree <- pctree(items ~ group + gender + agegroup, data = desc2)
-pc_tree_pgamma <- add_effectsize(pc_tree, model = "pctree", purification = "iterative", p.adj = "fdr", reverse_splits = TRUE, direction = "topdown")
-plot(pc_tree_pgamma, color_by_node = 1)
-plot(pc_tree_pgamma, color_by_node = 2)
-plot(pc_tree_pgamma, type = "regions", color_by_node = 1)
-plot(pc_tree_pgamma, type = "regions", color_by_node = 2)
 ```
 
 ## References
