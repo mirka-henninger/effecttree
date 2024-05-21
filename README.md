@@ -8,13 +8,15 @@ devtools::install_github("mirka-henninger/effecttree")
 library(effecttree)
 ```
 
-It uses functions from the [psychotree](https://github.com/cran/psychotree/) and [partykit](https://github.com/cran/partykit) packages to fit the raschtree in the recursive partioning environment. The functions from the packages (in particular mob, mob_control, and graphics functions) are modified, to include the new stopping rule and to be able to color items in each end node by the Mantel-Haenszel odds ratio effect size measure of inner nodes for the Rasch tree or by the partial gamma coefficient for the partial credit tree. Additional helper functions are provided to compute the effect size measures from the tree object. As these functions are modified, it is important unload partykit and psychotree before the usage. This repository is currently under development and undergoes ongoing changes and improvement. Please report any bugs that you encounter. 
+It uses functions from the [psychotree](https://github.com/cran/psychotree/) and [partykit](https://github.com/cran/partykit) packages to fit the rasch tree and partial credit tree in the recursive partitioning framework. This repository adds to these packages by integrating effect size measures (Mantel-Haenszel odds ratio, partial gamma coefficient) for differential item functioning and differential step functioning. These effect size measures can be added to the trees, allow researchers to display effect sizes for each split, to reverse splits when effect sizes are negligible, and to color items in each end node based on the effect size measure. Additional helper functions are provided to extract the effect size measures from the tree object. This repository is currently under development and undergoes ongoing changes and improvement. Please report any bugs that you encounter. 
 
 ``` r
 data("SPISA", package = "psychotree")
 RT <- raschtree(spisa ~ gender + age + semester, data = SPISA)
-RT_eff <- add_effectsize(RT, purification = "iterative", type = 'raschtree')
-RT_eff$info$effectsizeplot(RT_eff, color_by_node = 1)plot(RT_eff, color_by_node = 3)
+RT_eff <- add_effectsize(RT, model = 'raschtree', purification = "iterative", p.adj = "fdr", reverse_splits = FALSE)
+RT_eff$info$effectsize
+plot(RT_eff, color_by_node = 1)
+plot(RT_eff, color_by_node = 3)
 ```
 
 ## References
