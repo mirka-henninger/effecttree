@@ -20,6 +20,14 @@ plot(RT_eff, color_by_node = 3)
 ```
 
 ## References
+Barbiero, A., & Hitaj, A. (2020). Goodman and Kruskal’s gamma coefficient for ordinalized bivariate normal distributions. Psychometrika, 85(4), 905–925. https://doi.org/10.1007/s11336-020-09730-5
+
+Benjamini, Y., & Hochberg, Y. (1995). Controlling the false discovery rate: A practical and powerful approach to multiple testing. Journal of the Royal Statistical Society. Series B: Statistical Methodology, 57, 289–300. http://www.jstor.com/stable/2346101
+
+Bjorner, J. B., Kreiner, S., Ware, J. E., Damsgaard, M. T., & Bech, P. (1998). Differential item functioning in the Danish translation of the SF-36. Journal of Clinical Epidemiology, 51, 1189–1202. https://doi.org/10. 1016/S0895-4356(98)00111-5
+
+Davis, J. A. (1967). A partial coefficient for Goodman and Kruskal’s gamma. Journal of the American Statistical Association, 62, 189–193. https: //www.jstor.org/stable/2282922
+
 Glas, C. A. W., & Verhelst, N. D. (1995). Testing the Rasch model. In G. H. Fischer & I. W. Molenaar (Eds.), Rasch models: Foundations, recent developments, and applications (pp. 69–95). Springer. https://doi.org/10.1007/978-1-4612-4230-7_5
 
 Henninger, M., Debelak, R., & Strobl, C. (2023). A new stopping criterion for Rasch trees based on the Mantel-Haenszel effect size measure for differential item functioning. Educational Psychological Measurement, 83, 181-212. doi:10.1177/ 00131644221077135.
@@ -29,6 +37,8 @@ Holland, P. W., & Thayer, D. T. (1985). An alternate definition of the ETS delta
 Holland, P. W., & Thayer, D. T. (1986). Differential item functioning and the Mantel-Haenszel procedure. Program Statistics Research Technical Report No. 86-69, 1–24. https://doi.org/10.1002/j.2330-8516.1986.tb00186.x
 
 Hothorn, T., & Zeileis, A. (2015). partykit: A modular toolkit for recursive partioning in {R}. Journal of Machine Learning Research, 16, 3905–3909. http://jmlr.org/papers/v16/hothorn15a.html
+
+Komboz, B., Strobl, C., & Zeileis, A. (2018). Tree-based global model tests for polytomous Rasch models. Educational and Psychological Measure- ment, 78, 128–166. https://doi.org/10.1177/0013164416664394
 
 Magis, D., Béland, S., Tuerlinckx, F., & De Boeck, P. (2010). A general framework and an R package for the detection of dichotomous differential item functioning. Behavior Research Methods, 42, 847–862. https://doi.org/10.3758/BRM.42.3.847
 
