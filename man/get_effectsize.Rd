@@ -30,6 +30,15 @@ data("DIFSim", package = "psychotree")
 RT <- raschtree(resp ~ age + gender + motivation, data = DIFSim)
 eff <- get_effectsize(RT, model = "raschtree", purification = "iterative")
 eff
+
+## RStree
+data("dat_organization")
+items <- as.data.frame(dat_organization[, grep("item", names(dat_organization))])
+dat_organization$items <- apply(items,2,as.numeric)
+rs_tree <- rstree(items ~ sex + age + length_service + same_position + leadership,
+                  data = dat_organization)
+eff <- get_effectsize(rs_tree, model = "rstree", p.adj = "fdr", purification = "iterative")
+eff
 }
 
 }

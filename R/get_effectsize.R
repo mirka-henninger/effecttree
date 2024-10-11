@@ -15,6 +15,15 @@
 #' RT <- raschtree(resp ~ age + gender + motivation, data = DIFSim)
 #' eff <- get_effectsize(RT, model = "raschtree", purification = "iterative")
 #' eff
+#'
+#' ## RStree
+#' data("dat_organization")
+#' items <- as.data.frame(dat_organization[, grep("item", names(dat_organization))])
+#' dat_organization$items <- apply(items,2,as.numeric)
+#' rs_tree <- rstree(items ~ sex + age + length_service + same_position + leadership,
+#'                   data = dat_organization)
+#' eff <- get_effectsize(rs_tree, model = "rstree", p.adj = "fdr", purification = "iterative")
+#' eff
 #' }
 #'
 #' @export
@@ -35,6 +44,10 @@ get_effectsize <- function(object, model, purification, p.adj, threshold = c(.21
   sums <- rowSums(dat)
   node_names <- paste("node", ids, sep = "")
 
+  if(length(split_groups) == 0){
+    warning("No split performed in the tree, so no effect size can be computed")
+  }
+
   # distinguish raschtree and pctree
   if(model == "raschtree"){
     MH <- lapply(split_groups, function(grp)(calculate_mantelhaenszel(dat = dat, split_group = grp, sums = sums, purification = purification)))
@@ -47,7 +60,7 @@ get_effectsize <- function(object, model, purification, p.adj, threshold = c(.21
     }
     effectsize <- summary_mantelhaenszel(MH)
   }
-  if(model == "pctree"){
+  if(model == "pctree" | model == "rstree"){
     pgamma <- lapply(split_groups, function(grp)(calculate_pgamma(dat = dat, split_group = grp, purification = purification, p.adj = p.adj, threshold = threshold)))
     summary_pgamma <- function(x){
       list(classification = sapply(x, function(x) x$classification),

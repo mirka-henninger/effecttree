@@ -67,5 +67,17 @@ plot(pc_tree_pgamma, color_by_node = 1)
 plot(pc_tree_pgamma, type = "regions", color_by_node = 1)
 plot(pc_tree_pgamma_stopped, color_by_node = 1)
 plot(pc_tree_pgamma_stopped, type = "regions", color_by_node = 1)
+
+#' ## RStree
+rs_tree <- rstree(items ~ sex + age + length_service + same_position + leadership,
+                  data = dat_organization)
+plot(rs_tree)
+rs_tree_pgamma <- add_effectsize(rs_tree, purification = "iterative", p.adj = "fdr")
+rs_tree_pgamma_stopped <- add_effectsize(rs_tree, purification = "iterative", p.adj = "fdr",
+                                         reverse_splits = TRUE, direction = "topdown")
+rs_tree_pgamma_stopped <- add_effectsize(rs_tree, purification = "iterative", p.adj = "fdr",
+                                         reverse_splits = TRUE, direction = "bottomup")
+plot(rs_tree_pgamma)
+plot(rs_tree_pgamma_stopped)
 }
 }
